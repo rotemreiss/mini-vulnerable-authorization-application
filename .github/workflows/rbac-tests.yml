@@ -56,11 +56,11 @@ jobs:
 
       - name: Extract JWTs
         run: |
-          token_user=$(curl -s http://localhost:3000/api/login --data '{"username":"user1", "password":"password"}' -H "Content-Type: application/json" | jq -r '.token')
-          echo "TOKEN_USER=$token_user" >> $GITHUB_ENV
+          token_user=$(curl -s http://localhost:3000/api/login --data '{"username":"user1", "password":"password"}' -H "Content-Type: application/json")
+          echo "TOKEN_USER=${{fromJson($token_user).token}}" >> $GITHUB_ENV
           
-          token_admin=$(curl -s http://localhost:3000/api/login --data '{"username":"admin1", "password":"password"}' -H "Content-Type: application/json" | jq -r '.token')
-          echo "TOKEN_ADMIN=$token_admin" >> $GITHUB_ENV
+          token_admin=$(curl -s http://localhost:3000/api/login --data '{"username":"admin1", "password":"password"}' -H "Content-Type: application/json")
+          echo "TOKEN_ADMIN=${{fromJson($token_admin).token}}" >> $GITHUB_ENV
 
       - name: Run Nuclei Tests
         run: |
