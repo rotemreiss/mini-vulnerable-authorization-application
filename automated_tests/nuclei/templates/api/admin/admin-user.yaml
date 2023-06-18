@@ -1,0 +1,28 @@
+id: api-admin-user
+
+info:
+  name: Admin user
+  author: rreiss
+  severity: high
+  tags: authorization,admin,role-user
+
+  metadata:
+    max-request: 1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/admin"
+    headers:
+      Authorization: Bearer {{token_user}}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body

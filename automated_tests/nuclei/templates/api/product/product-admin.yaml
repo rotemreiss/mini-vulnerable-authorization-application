@@ -1,0 +1,29 @@
+id: api-product-admin
+
+info:
+  name: Product admin
+  author: rreiss
+  severity: info
+  tags: authorization,product,role-admin
+
+  metadata:
+    max-request: 1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/product"
+    headers:
+      Authorization: Bearer {{token_admin}}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body
+

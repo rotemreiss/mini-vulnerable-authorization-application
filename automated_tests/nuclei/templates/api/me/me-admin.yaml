@@ -1,0 +1,28 @@
+id: api-me-admin
+
+info:
+  name: Me admin
+  author: rreiss
+  severity: info
+  tags: authorization,me,role-admin
+
+  metadata:
+    max-request: 1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/me"
+    headers:
+      Authorization: Bearer {{token_admin}}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body

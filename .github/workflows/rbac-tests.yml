@@ -1,0 +1,65 @@
+name: Extract Token and Nuclei Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  rbac-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 17.x ]
+
+    container:
+      image: golang:latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Nuclei
+        id: cache-nuclei
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.HOME }}/.cache/go-build
+          key: ${{ runner.os }}-nuclei-${{ hashFiles('go.mod') }}
+          restore-keys: |
+            ${{ runner.os }}-nuclei-
+
+      - name: Install Nuclei
+        if: steps.cache-nuclei.outputs.cache-hit != 'true'
+        run: go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install NPM application
+        run: npm install
+
+      - name: Start NPM application
+        run: npm start
+
+      - name: Extract USER Token
+        env:
+          PASSWORD: ${{ secrets.USER_PASSWORD_SECRET }}
+        run: |
+          token=$(curl -s http://localhost:3000/api/login --data '{"username":"user1", "password":"'"$PASSWORD"'"}' -H "Content-Type: application/json" | jq -r '.token')
+          echo "TOKEN_USER=$token" >> $GITHUB_ENV
+
+      - name: Extract ADMIN Token
+        env:
+          PASSWORD: ${{ secrets.ADMIN_PASSWORD_SECRET }}
+        run: |
+          token=$(curl -s http://localhost:3000/api/login --data '{"username":"admin1", "password":"'"$PASSWORD"'"}' -H "Content-Type: application/json" | jq -r '.token')
+          echo "TOKEN_ADMIN=$token" >> $GITHUB_ENV
+
+      - name: Run Nuclei Tests
+        run: |
+          ./automated_tests/nuclei/scripts/run_tests.sh

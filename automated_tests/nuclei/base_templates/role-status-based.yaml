@@ -1,0 +1,29 @@
+id: {{PLACEHOLDER_API_ID}}-{{PLACEHOLDER_ROLE}}
+
+info:
+  name: {{PLACEHOLDER_API_HUMAN_NAME}} {{PLACEHOLDER_ROLE}}
+  author: rreiss
+  severity: info
+  tags: authorization,{{PLACEHOLDER_API_NAME}},role-{{PLACEHOLDER_ROLE}}
+
+  metadata:
+    max-request: 1
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/{{PLACEHOLDER_API_PATH}}"
+    headers:
+      Authorization: Bearer {{token_{{PLACEHOLDER_ROLE}}}}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body
+
