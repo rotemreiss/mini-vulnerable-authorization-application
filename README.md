@@ -1,4 +1,4 @@
-# Mini Vulnerable Authorization Application (MVAA)
+# Mini Vulnerable Authorization Application (mVAA)
 
 This is an intentionally vulnerable Node.js web application, designed to assist security enthusiasts, developers and students to train their automated tools to identify authorization (BOLA) vulnerabilities in a safe and legal environment.
 
@@ -7,19 +7,21 @@ This is an intentionally vulnerable Node.js web application, designed to assist 
 
 ## Disclaimer
 
-MVAA is meant to be **legally** used by security professionals, developers and students for learning and testing purposes. We strongly discourage any use of DVAA for malicious or illegal activities. The maintainers of MVAA will not be responsible for any misuse of this application.
+mVAA is meant to be **legally** used by security professionals, developers and students for learning and testing purposes.
+We strongly discourage any use of mVAA for malicious or illegal activities.
+The maintainers of mVAA will not be responsible for any misuse of this application.
 
 ## Setup
 
-1. Clone the repo: `git clone https://github.com/YourRepo/DVAA.git`
-2. Navigate into the DVAA directory: `cd DVAA`
+1. Clone the repo.
+2. Navigate into the repository directory: `cd mini-vulnerable-authorization-application`
 3. Install dependencies: `npm install`
 4. Create a `.env` file and set your secret key: `echo "SECRET_KEY=YourSecretKey" > .env`
 5. Start the application: `npm start`
 
 The application will be available at http://localhost:3000
 
-## Test with Fixes Applied
+## Fixed Application Feature Flag
 You can run the fixed version of the application by setting the broken feature flag to false:
 ```
 FEATURE_FLAG_BROKEN="false"
