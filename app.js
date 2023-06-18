@@ -7,20 +7,12 @@ const users = JSON.parse(fs.readFileSync('./data/users.json', 'utf8'));
 
 const app = express();
 
-const secretKey = process.env.SECRET_KEY;
+const secretKey = process.env.SECRET_KEY || "SECRET_KEY";
+const featureFlagBroken = process.env.FEATURE_FLAG_BROKEN === "true";
+
+console.log("Authorization is in broken state: " + featureFlagBroken)
 
 app.use(express.json());
-
-// Exclude /api/login from being authenticated
-const isRevokedCallback = function(req, payload, done){
-    const issuer = payload.iss;
-    const tokenId = payload.jti;
-
-    data.getRevokedToken(issuer, tokenId, function(err, token){
-        if (err) { return done(err); }
-        return done(null, token ? true : false);
-    });
-};
 
 // Protect the routes
 app.use(expressJwt({
@@ -84,14 +76,20 @@ app.get('/api/product', (req, res) => {
     res.json({name: 'Dummy Product', sku: 'DUM123', price: 19.99});
 });
 
-app.post('/api/product', (req, res) => {
-    if (!req.user || req.user.role !== 'admin') return res.status(401).json({message: 'Unauthorized'});
+const adminOnly = (req, res) => {
+    if (!featureFlagBroken && (!req.user || req.user.role !== 'admin')) {
+        return res.status(401).json({message: 'Unauthorized'});
+    }
     res.json({ success: true });
-});
+}
+
+app.post('/api/product', adminOnly);
+
+app.get('/api/admin', adminOnly);
 
 app.get('/api/store/:storeId', (req, res) => {
     if (!req.user || req.user.store != req.params.storeId) return res.status(401).json({message: 'Unauthorized'});
-    res.json({message: `Access granted to store ${req.params.storeId}`});
+    res.json({ success: true });
 });
 
 app.listen(3000, () => console.log('App is running on port 3000'));

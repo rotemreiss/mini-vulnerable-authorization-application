@@ -1,10 +1,13 @@
-# Damn Vulnerable Authorization Application (DVAA)
+# Mini Vulnerable Authorization Application (MVAA)
 
 This is an intentionally vulnerable Node.js web application, designed to assist security enthusiasts, developers and students to train their automated tools to identify authorization (BOLA) vulnerabilities in a safe and legal environment.
 
+:violin: The application was created as part of the demo for the talk
+"The Missing Piece: Adding Automated RBAC Checks for Authorization in Your Pipelines" at [BSidesTLV 2023](https://bsidestlv.com/agenda/the_missing_piece__adding_automated_rbac_checks_for_authorization_in_your_pipelines/). 
+
 ## Disclaimer
 
-DVAA is meant to be **legally** used by security professionals, developers and students for learning and testing purposes. We strongly discourage any use of DVAA for malicious or illegal activities. The maintainers of DVAA will not be responsible for any misuse of this application.
+MVAA is meant to be **legally** used by security professionals, developers and students for learning and testing purposes. We strongly discourage any use of DVAA for malicious or illegal activities. The maintainers of MVAA will not be responsible for any misuse of this application.
 
 ## Setup
 
@@ -15,6 +18,12 @@ DVAA is meant to be **legally** used by security professionals, developers and s
 5. Start the application: `npm start`
 
 The application will be available at http://localhost:3000
+
+## Test with Fixes Applied
+You can run the fixed version of the application by setting the broken feature flag to false:
+```
+FEATURE_FLAG_BROKEN="false"
+```
 
 ## Testing
 
