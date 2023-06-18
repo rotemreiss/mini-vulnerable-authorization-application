@@ -14,26 +14,24 @@ jobs:
       matrix:
         node-version: [ 17.x ]
 
-    container:
-      image: golang:latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Cache Nuclei
-        id: cache-nuclei
+      - name: Cache Go dependencies
+        id: cache-go-deps
         uses: actions/cache@v2
         with:
-          path: |
-            ${{ env.HOME }}/.cache/go-build
-            ${{ env.HOME }}/go/pkg/mod
-          key: ${{ runner.os }}-nuclei-${{ hashFiles('go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-nuclei-
+          path: ${{ env.HOME }}/.cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('go.mod') }}
+          restore-keys: ${{ runner.os }}-go-
+
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.17'
 
       - name: Install Nuclei
-        if: steps.cache-nuclei.outputs.cache-hit != 'true'
         run: go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
 
       - name: Use Node.js ${{ matrix.node-version }}
@@ -56,11 +54,13 @@ jobs:
 
       - name: Extract JWTs
         run: |
-          token_user=$(curl -s http://localhost:3000/api/login --data '{"username":"user1", "password":"password"}' -H "Content-Type: application/json")
-          echo "TOKEN_USER=${{fromJson($token_user).token}}" >> $GITHUB_ENV
+          response_user=$(curl -s http://localhost:3000/api/login --data '{"username":"user1", "password":"password"}' -H "Content-Type: application/json")
+          token_user=$(echo "$response_user" | grep -oE '"token":"[^"]+' | cut -d':' -f2 | tr -d '"')
+          echo "TOKEN_USER=$token_user" >> $GITHUB_ENV
           
-          token_admin=$(curl -s http://localhost:3000/api/login --data '{"username":"admin1", "password":"password"}' -H "Content-Type: application/json")
-          echo "TOKEN_ADMIN=${{fromJson($token_admin).token}}" >> $GITHUB_ENV
+          response_admin=$(curl -s http://localhost:3000/api/login --data '{"username":"admin1", "password":"password"}' -H "Content-Type: application/json")
+          token_admin=$(echo "$response_admin" | grep -oE '"token":"[^"]+' | cut -d':' -f2 | tr -d '"')
+          echo "TOKEN_ADMIN=$token_admin" >> $GITHUB_ENV
 
       - name: Run Nuclei Tests
         run: |
