@@ -1,5 +1,7 @@
 # Mini Vulnerable Authorization Application (mVAA)
 
+[![Node.js CI](https://github.com/rotemreiss/mini-vulnerable-authorization-application/actions/workflows/run-tests.yml/badge.svg)](https://github.com/rotemreiss/mini-vulnerable-authorization-application/actions/workflows/run-tests.yml)
+
 This is an intentionally vulnerable Node.js web application, designed to assist security enthusiasts, developers and students to train their automated tools to identify authorization (BOLA) vulnerabilities in a safe and legal environment.
 
 :violin: The application was created as part of the demo for the talk
