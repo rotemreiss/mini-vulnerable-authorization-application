@@ -44,7 +44,14 @@ jobs:
         run: npm install
 
       - name: Start NPM application
-        run: npm start
+        run: npm start --silent &
+        background: true
+
+      - name: Wait for NPM server to be ready
+        run: |
+          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
+            sleep 1
+          done
 
       - name: Extract USER Token
         env:
