@@ -44,8 +44,7 @@ jobs:
         run: npm install
 
       - name: Start NPM application
-        run: npm start --silent &
-        background: true
+        run: nohup npm start > /dev/null 2>&1 &
 
       - name: Wait for NPM server to be ready
         run: |
