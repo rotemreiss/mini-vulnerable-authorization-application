@@ -1,4 +1,4 @@
-id: api-me-admin
+id: GET-api-me-admin
 
 info:
   name: Me admin
@@ -8,6 +8,8 @@ info:
 
   metadata:
     max-request: 1
+    rbac-role: 'admin'
+    rbac-method: 'GET'
 
 http:
   - method: GET

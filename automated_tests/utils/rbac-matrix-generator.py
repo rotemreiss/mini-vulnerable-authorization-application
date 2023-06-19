@@ -44,14 +44,15 @@ def generate_matrix(templates):
         # Get the relevant data from the template.
         tpl_id = tpl["id"]
         severity = tpl["info"]["severity"]
+        metadata = tpl["info"]["metadata"]
 
         # Extract the tested role from the template id.
-        role = tpl_id.split("--")[-1]
+        role = metadata["rbac-role"]
         roles.add(role)
 
         # We are making the assumption that there is only one request.
-        method = tpl["requests"][0]["method"]
-        path = tpl["requests"][0]["path"][0].replace('{{BaseURL}}/', '')
+        method = metadata["rbac-method"]
+        path = tpl["http"][0]["path"][0].replace('{{BaseURL}}/', '')
 
         # Create a unique identifier for this API endpoint.
         uniq_id = method + "--" + path
@@ -66,15 +67,56 @@ def get_nuclei_violations(nuclei_results_path):
     violations = []
 
     nuclei_f = open(nuclei_results_path, 'r')
+    nuclei_results = json.load(nuclei_f)
 
-    for res in nuclei_f:
-        res_json = json.loads(res.strip())
-        violations.append(res_json["templateID"])
+    for res in nuclei_results:
+        violations.append(res["template-id"])
 
     # Closing file.
     nuclei_f.close()
 
     return violations
+
+
+def create_markdown_page(json_data):
+    # Header and basic information
+    markdown = '''# APIs RBAC Matrix
+
+This page presents the permissions matrix of our API endpoints.
+
+## Legend
+:red_circle: - Violation
+:white_check_mark: - Properly Configured
+
+## RBAC (role-based-access-control) Matrix Table
+
+| Endpoint |'''
+    roles = json_data.get("roles", [])
+    matrix = json_data.get("matrix", {})
+    violations = json_data.get("violations", [])
+
+    # Generating table headers for roles
+    for role in roles:
+        markdown += f' {role} |'
+    markdown += '\n| --- |'
+    markdown += ' --- |' * len(roles)
+    markdown += '\n'
+
+    # Generating table rows
+    for endpoint, access in matrix.items():
+        row = f'| {endpoint} |'
+        for role in roles:
+            if role in access:
+                is_allowed = access[role].get("is_allowed", False)
+                is_violation = access[role].get("template_id") in violations
+                authorization_emoji = ":red_circle:" if is_violation else ":white_check_mark:"
+                authorization_text = "Authorized" if is_allowed else "Unauthorized"
+                row += f' {authorization_text} {authorization_emoji} |'
+            else:
+                row += ' MISSING |'
+        markdown += row + '\n'
+
+    return markdown
 
 
 def main():
@@ -91,6 +133,7 @@ def main():
                         type=file_arg,
                         dest='nuclei_results_path')
     parser.add_argument('-o', '--output', help='File to output the matrix JSON to.', dest='output')
+    parser.add_argument('-om', '--output-markdown', help='File to output the matrix as Markdown.', dest='output_markdown')
     args = parser.parse_args()
 
     templates = get_templates(args.templates_dir)
@@ -102,8 +145,11 @@ def main():
     }
 
     if args.output:
-        with open(args.output, 'w') as outfile:
+        with open(args.output, 'w', encoding="utf-8") as outfile:
             json.dump(output_data, outfile)
+    elif args.output_markdown:
+        with open(args.output_markdown, 'w', encoding="utf-8") as outfile:
+            outfile.write(create_markdown_page(output_data))
     else:
         print(json.dumps(output_data))
 

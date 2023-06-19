@@ -1,4 +1,4 @@
-id: api-product-user
+id: GET-api-product-user
 
 info:
   name: Product user
@@ -8,6 +8,8 @@ info:
 
   metadata:
     max-request: 1
+    rbac-role: 'user'
+    rbac-method: 'GET'
 
 http:
   - method: GET

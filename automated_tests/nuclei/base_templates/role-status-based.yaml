@@ -1,4 +1,4 @@
-id: {{PLACEHOLDER_API_ID}}-{{PLACEHOLDER_ROLE}}
+id: {{PLACEHOLDER_METHOD}}-{{PLACEHOLDER_API_ID}}-{{PLACEHOLDER_ROLE}}
 
 info:
   name: {{PLACEHOLDER_API_HUMAN_NAME}} {{PLACEHOLDER_ROLE}}
@@ -8,9 +8,11 @@ info:
 
   metadata:
     max-request: 1
+    rbac-role: '{{PLACEHOLDER_ROLE}}'
+    rbac-method: '{{PLACEHOLDER_METHOD}}'
 
 http:
-  - method: GET
+  - method: {{PLACEHOLDER_METHOD}}
     path:
       - "{{BaseURL}}/{{PLACEHOLDER_API_PATH}}"
     headers:
