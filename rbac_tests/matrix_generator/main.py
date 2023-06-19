@@ -85,8 +85,8 @@ def create_markdown_page(json_data):
 This page presents the permissions matrix of our API endpoints.
 
 ## Legend
-- :red_circle: - Violation
-- :white_check_mark: - Properly Configured
+- :x: - Check failed (violation)
+- :white_check_mark: - Check passed (properly configured)
 
 ## RBAC (role-based-access-control) Matrix Table
 
@@ -97,9 +97,9 @@ This page presents the permissions matrix of our API endpoints.
 
     # Generating table headers for roles
     for role in roles:
-        markdown += f' :boy: {role} |'
+        markdown += f' :boy: {role} | Result |'
     markdown += '\n| --- | --- |'
-    markdown += ' --- |' * len(roles)
+    markdown += ' --- |' * len(roles) * 2
     markdown += '\n'
 
     # Generating table rows
@@ -111,9 +111,9 @@ This page presents the permissions matrix of our API endpoints.
             if role in access:
                 is_allowed = access[role].get("is_allowed", False)
                 is_violation = access[role].get("template_id") in violations
-                authorization_emoji = ":red_circle:" if is_violation else ":white_check_mark:"
                 authorization_text = "Authorized" if is_allowed else "Unauthorized"
-                row += f' {authorization_text} {authorization_emoji} |'
+                authorization_emoji = ":x:" if is_violation else ":white_check_mark:"
+                row += f' {authorization_text} | {authorization_emoji} |'
             else:
                 row += ' MISSING |'
         markdown += row + '\n'

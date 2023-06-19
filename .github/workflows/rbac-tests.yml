@@ -70,7 +70,7 @@ jobs:
         uses: projectdiscovery/nuclei-action@main
         with:
           target: http://127.0.0.1:3000
-          templates: automated_tests/nuclei/templates
+          templates: rbac_tests/templates
           flags: "-var token_user=$TOKEN_USER -var token_admin=$TOKEN_ADMIN -silent -severity high -je results.json"
           github-report: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -84,10 +84,10 @@ jobs:
         with:
           python-version: '3.10'
           cache: 'pip' # caching pip dependencies
-      - run: pip install -r automated_tests/matrix_generator/requirements.txt
+      - run: pip install -r rbac_tests/matrix_generator/requirements.txt
 
       - name: Generate RBAC Matrix Markdown
-        run: python automated_tests/matrix_generator/main.py -t automated_tests/nuclei/templates -r results.json -om docs/permissions/MATRIX.md
+        run: python rbac_tests/matrix_generator/main.py -t rbac_tests/templates -r results.json -om docs/permissions/MATRIX.md
 
       - name: Commit Matrix
         if: ${{ github.event_name == 'push' || github.event_name == 'pull_request' }}
