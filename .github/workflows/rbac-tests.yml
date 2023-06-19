@@ -24,14 +24,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install Go
-        uses: actions/setup-go@v4
         with:
-          go-version: '>=1.20.0'
-
-      - name: Install Nuclei
-        run: go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -66,9 +61,14 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
-      - name: Run RBAC Tests
-        run: |
-          nuclei -t automated_tests/nuclei/templates -u http://127.0.0.1:3000 -var token_user=$TOKEN_USER -var token_admin=$TOKEN_ADMIN -silent -severity high -je results.json
+      - name: Nuclei - RBAC Tests
+        uses: projectdiscovery/nuclei-action@main
+        with:
+          target: http://127.0.0.1:3000
+          templates: automated_tests/nuclei/templates
+          flags: "-var token_user=$TOKEN_USER -var token_admin=$TOKEN_ADMIN -silent -severity high -je results.json"
+          github-report: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v3
         with:
