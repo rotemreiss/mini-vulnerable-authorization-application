@@ -69,3 +69,8 @@ jobs:
       - name: Run RBAC Tests
         run: |
           ./automated_tests/nuclei/scripts/run_tests.sh
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: RBAC Test Results
+          path: results.json
