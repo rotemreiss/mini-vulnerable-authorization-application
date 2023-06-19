@@ -1,0 +1,34 @@
+id: POST-api-product-admin
+
+info:
+  name: Product admin
+  author: rreiss
+  severity: info
+  tags: authorization,product,role-admin
+
+  metadata:
+    max-request: 1
+    rbac-role: 'admin'
+    rbac-method: 'POST'
+
+http:
+  - method: POST
+    path:
+      - "{{BaseURL}}/api/product"
+    headers:
+      Content-Type: application/json
+      Authorization: Bearer {{token_user}}
+
+    body: '{"sku":"1","name":"Test","price":15.90}'
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body
+

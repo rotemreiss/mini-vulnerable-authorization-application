@@ -80,31 +80,33 @@ def get_nuclei_violations(nuclei_results_path):
 
 def create_markdown_page(json_data):
     # Header and basic information
-    markdown = '''# APIs RBAC Matrix
+    markdown = '''# APIs RBAC Matrix :key:
 
 This page presents the permissions matrix of our API endpoints.
 
 ## Legend
-:red_circle: - Violation
-:white_check_mark: - Properly Configured
+- :red_circle: - Violation
+- :white_check_mark: - Properly Configured
 
 ## RBAC (role-based-access-control) Matrix Table
 
-| Endpoint |'''
+| :car: Endpoint | :rainbow: HTTP Method | '''
     roles = json_data.get("roles", [])
     matrix = json_data.get("matrix", {})
     violations = json_data.get("violations", [])
 
     # Generating table headers for roles
     for role in roles:
-        markdown += f' {role} |'
-    markdown += '\n| --- |'
+        markdown += f' :boy: {role} |'
+    markdown += '\n| --- | --- |'
     markdown += ' --- |' * len(roles)
     markdown += '\n'
 
     # Generating table rows
     for endpoint, access in matrix.items():
-        row = f'| {endpoint} |'
+        endpoints_parts = endpoint.split("--")
+        row = f'| {endpoints_parts[1]} | '
+        row += f'{endpoints_parts[0]} |'
         for role in roles:
             if role in access:
                 is_allowed = access[role].get("is_allowed", False)

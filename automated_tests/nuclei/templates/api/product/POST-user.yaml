@@ -1,22 +1,25 @@
-id: GET-api-product-user
+id: POST-api-product-user
 
 info:
   name: Product user
   author: rreiss
-  severity: info
+  severity: high
   tags: authorization,product,role-user
 
   metadata:
     max-request: 1
     rbac-role: 'user'
-    rbac-method: 'GET'
+    rbac-method: 'POST'
 
 http:
-  - method: GET
+  - method: POST
     path:
       - "{{BaseURL}}/api/product"
     headers:
+      Content-Type: application/json
       Authorization: Bearer {{token_user}}
+
+    body: '{"sku":"1","name":"Test","price":15.90}'
 
     matchers-condition: or
     matchers:

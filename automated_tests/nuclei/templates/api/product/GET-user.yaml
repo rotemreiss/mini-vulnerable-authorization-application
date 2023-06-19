@@ -1,0 +1,31 @@
+id: GET-api-product-user
+
+info:
+  name: Product user
+  author: rreiss
+  severity: high
+  tags: authorization,product,role-user
+
+  metadata:
+    max-request: 1
+    rbac-role: 'user'
+    rbac-method: 'GET'
+
+http:
+  - method: GET
+    path:
+      - "{{BaseURL}}/api/product"
+    headers:
+      Authorization: Bearer {{token_user}}
+
+    matchers-condition: or
+    matchers:
+      - type: status
+        status:
+          - 200
+
+      - type: word
+        words:
+          - "Invalid token"
+        part: body
+
