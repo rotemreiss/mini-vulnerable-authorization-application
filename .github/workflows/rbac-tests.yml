@@ -89,7 +89,8 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -a -m "Update permissions matrix"
+          git add docs/permissions/MATRIX.md
+          git commit -m "Update permissions matrix"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
