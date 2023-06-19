@@ -68,7 +68,7 @@ jobs:
 
       - name: Run RBAC Tests
         run: |
-          ./automated_tests/nuclei/scripts/run_tests.sh
+          nuclei -t automated_tests/nuclei/templates -u http://127.0.0.1:3000 -var token_user=$TOKEN_USER -var token_admin=$TOKEN_ADMIN -j -silent -severity high "$@" > results.json
 
       - uses: actions/upload-artifact@v3
         with:
