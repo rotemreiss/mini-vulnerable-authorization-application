@@ -8,7 +8,7 @@ const users = JSON.parse(fs.readFileSync('./data/users.json', 'utf8'));
 const app = express();
 
 const secretKey = process.env.SECRET_KEY || "SECRET_KEY";
-const featureFlagBroken = process.env.FEATURE_FLAG_BROKEN === "true";
+const featureFlagBroken = process.env.FEATURE_FLAG_BROKEN === "true" || true;
 
 console.log("Authorization is in broken state: " + featureFlagBroken)
 
