@@ -72,8 +72,8 @@ jobs:
           target: http://127.0.0.1:3000
           templates: rbac_tests/templates
           flags: "-var token_user=$TOKEN_USER -var token_admin=$TOKEN_ADMIN -silent -severity high -je results.json"
-          github-report: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+#          github-report: true
+#          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/upload-artifact@v3
         with:
