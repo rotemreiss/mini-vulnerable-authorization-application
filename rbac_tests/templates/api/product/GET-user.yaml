@@ -3,7 +3,7 @@ id: GET-api-product-user
 info:
   name: Product user
   author: rreiss
-  severity: high
+  severity: info
   tags: authorization,product,role-user
 
   metadata:
