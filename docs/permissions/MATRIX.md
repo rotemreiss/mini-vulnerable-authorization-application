@@ -10,7 +10,7 @@ This page presents the permissions matrix of our API endpoints.
 
 | :car: Endpoint | :rainbow: HTTP Method |  :boy: user | Result | :boy: admin | Result |
 | --- | --- | --- | --- | --- | --- |
-| api/me | GET | Authorized | :white_check_mark: | Authorized | :white_check_mark: |
 | api/admin | GET | Unauthorized | :x: | Authorized | :white_check_mark: |
+| api/me | GET | Authorized | :white_check_mark: | Authorized | :white_check_mark: |
 | api/product | POST | Unauthorized | :x: | Authorized | :white_check_mark: |
-| api/product | GET | Unauthorized | :x: | Authorized | :white_check_mark: |
+| api/product | GET | Authorized | :white_check_mark: | Authorized | :white_check_mark: |
